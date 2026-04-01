@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 antialiased;
+  }
+}
+
+/* Custom scrollbar for matrix */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-slate-900 rounded-full;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700 rounded-full cursor-pointer hover:bg-slate-600;
+}
