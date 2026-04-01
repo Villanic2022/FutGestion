@@ -69,18 +69,18 @@ function PaymentsPage() {
     : data.concepts;
 
   return (
-    <div className="p-8 h-full flex flex-col">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div className="p-4 lg:p-8 h-full flex flex-col min-w-0">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 lg:mb-8 gap-6">
         <div>
-          <h2 className="text-3xl font-bold mb-1">Control de Pagos</h2>
-          <p className="text-slate-400 text-sm">Hacé click en las celdas para alternar entre Pagado / No Pagado</p>
+          <h2 className="text-2xl lg:text-3xl font-bold mb-1">Control de Pagos</h2>
+          <p className="text-slate-400 text-sm">Hacé click en las celdas para alternar (Pagado / No Pagado)</p>
         </div>
         
-        <div className="flex gap-4 items-center">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row gap-4 items-center w-full lg:w-auto">
+          <div className="relative w-full sm:w-64">
             <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <select 
-              className="bg-slate-900 border border-slate-700 outline-none rounded-lg pl-10 pr-4 py-2 appearance-none cursor-pointer hover:border-slate-500 transition-colors"
+              className="w-full bg-slate-900 border border-slate-700 outline-none rounded-lg pl-10 pr-4 py-2 appearance-none cursor-pointer hover:border-slate-500 transition-colors"
               value={filterConcept}
               onChange={(e) => setFilterConcept(e.target.value)}
             >
@@ -93,7 +93,7 @@ function PaymentsPage() {
           
           <button 
             onClick={handleExport}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-lg shadow-indigo-500/30 font-medium whitespace-nowrap"
+            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-indigo-500/30 font-medium whitespace-nowrap"
           >
             <FaFilePdf /> Exportar PDF
           </button>
@@ -111,7 +111,7 @@ function PaymentsPage() {
             <table className="w-full text-left border-collapse min-w-max">
               <thead className="bg-slate-800/80 backdrop-blur-md sticky top-0 z-10 shadow-sm">
                 <tr>
-                  <th className="p-4 font-semibold text-slate-200 border-b border-r border-slate-700/50 sticky left-0 bg-slate-800 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)] w-64">
+                  <th className="p-3 lg:p-4 font-semibold text-slate-200 border-b border-r border-slate-700/50 sticky left-0 bg-slate-800 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)] w-48 lg:w-64">
                     Jugador
                   </th>
                   {displayConcepts.map(c => (
@@ -124,7 +124,7 @@ function PaymentsPage() {
               <tbody>
                 {data.rows.map((row, i) => (
                   <tr key={row.player.id} className="hover:bg-slate-800/30 transition-colors group">
-                    <td className="p-4 border-b border-r border-slate-800/50 sticky left-0 font-medium text-slate-300 bg-slate-900 group-hover:bg-slate-800/80 transition-colors z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)] whitespace-nowrap">
+                    <td className="p-3 lg:p-4 border-b border-r border-slate-800/50 sticky left-0 font-medium text-slate-300 bg-slate-900 group-hover:bg-slate-800/80 transition-colors z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)] whitespace-nowrap text-sm lg:text-base">
                       {row.player.last_name}, {row.player.first_name}
                     </td>
                     {displayConcepts.map(c => {

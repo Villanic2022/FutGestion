@@ -47,19 +47,20 @@ function PlayersPage() {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold">Jugadores</h2>
+    <div className="p-4 lg:p-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 lg:mb-8 gap-4">
+        <h2 className="text-2xl lg:text-3xl font-bold">Jugadores</h2>
         <button 
           onClick={() => openModal()}
-          className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-lg shadow-blue-500/30"
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-blue-500/30 font-medium"
         >
           <FaPlus /> Nuevo Jugador
         </button>
       </div>
 
       <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-xl">
-        <table className="w-full text-left">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left min-w-[500px]">
           <thead className="bg-slate-800/50">
             <tr>
               <th className="p-4 font-semibold text-slate-300">Nombre</th>
@@ -88,6 +89,7 @@ function PlayersPage() {
           </tbody>
         </table>
       </div>
+    </div>
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
