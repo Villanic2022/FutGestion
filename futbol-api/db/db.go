@@ -71,6 +71,13 @@ func migrate() {
 		}
 	}
 	log.Println("✅ Database migrated")
+
+	// Sincronizar secuencia del ID de players para evitar conflictos de clave primaria
+	if _, err := DB.Exec("SELECT setval('players_id_seq', COALESCE((SELECT MAX(id) FROM players), 1))"); err != nil {
+		log.Println("⚠️ Warning resetting players sequence:", err)
+	} else {
+		log.Println("✅ Secuencia players_id_seq sincronizada")
+	}
 }
 
 func getEnv(key, fallback string) string {
