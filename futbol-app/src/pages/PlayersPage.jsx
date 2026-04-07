@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaFileExcel } from 'react-icons/fa';
 import * as api from '../api';
+import * as XLSX from 'xlsx';
 
 function PlayersPage() {
   const [players, setPlayers] = useState([]);
@@ -37,6 +38,31 @@ function PlayersPage() {
     }
   };
 
+  const exportToExcel = () => {
+    const titulo = 'Lista de buena fe senior 2026';
+    const headers = ['Nombre', 'Apellido', 'DNI', 'Fecha de Nacimiento'];
+    const rows = players.map(p => ([
+      p.first_name,
+      p.last_name,
+      p.dni,
+      p.birth_date ? new Date(p.birth_date).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' }) : ''
+    ]));
+
+    const ws = XLSX.utils.aoa_to_sheet([[titulo], [], headers, ...rows]);
+
+    // Estilo ancho de columnas
+    ws['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 14 }, { wch: 20 }];
+
+    // Mergear el título en la primera fila (A1:D1)
+    ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Jugadores');
+
+    const fecha = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+    XLSX.writeFile(wb, `lista_buena_fe_senior_2026_${fecha}.xlsx`);
+  };
+
   const openModal = (player = null) => {
     if (player) {
       setFormData({ ...player, birth_date: player.birth_date.split('T')[0] });
@@ -50,22 +76,31 @@ function PlayersPage() {
     <div className="p-4 lg:p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 lg:mb-8 gap-4">
         <h2 className="text-2xl lg:text-3xl font-bold">Jugadores</h2>
-        <button 
-          onClick={() => openModal()}
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-blue-500/30 font-medium"
-        >
-          <FaPlus /> Nuevo Jugador
-        </button>
+        <div className="flex gap-3 w-full sm:w-auto">
+          <button
+            onClick={exportToExcel}
+            className="flex-1 sm:flex-initial bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-emerald-500/20 font-medium"
+          >
+            <FaFileExcel /> Exportar Excel
+          </button>
+          <button 
+            onClick={() => openModal()}
+            className="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-blue-500/30 font-medium"
+          >
+            <FaPlus /> Nuevo Jugador
+          </button>
+        </div>
       </div>
 
       <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left min-w-[500px]">
+          <table className="w-full text-left min-w-[600px]">
           <thead className="bg-slate-800/50">
             <tr>
               <th className="p-4 font-semibold text-slate-300">Nombre</th>
               <th className="p-4 font-semibold text-slate-300">Apellido</th>
               <th className="p-4 font-semibold text-slate-300">DNI</th>
+              <th className="p-4 font-semibold text-slate-300">Fecha de Nac.</th>
               <th className="p-4 font-semibold text-slate-300 text-right">Acciones</th>
             </tr>
           </thead>
@@ -75,6 +110,9 @@ function PlayersPage() {
                 <td className="p-4">{p.first_name}</td>
                 <td className="p-4 font-medium">{p.last_name}</td>
                 <td className="p-4 text-slate-400">{p.dni}</td>
+                <td className="p-4 text-slate-400">
+                  {p.birth_date ? new Date(p.birth_date).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' }) : '-'}
+                </td>
                 <td className="p-4 flex gap-3 justify-end">
                   <button onClick={() => openModal(p)} className="p-2 text-blue-400 hover:bg-blue-400/10 rounded transition-colors"><FaEdit /></button>
                   <button onClick={() => handleDelete(p.id)} className="p-2 text-rose-400 hover:bg-rose-400/10 rounded transition-colors"><FaTrash /></button>
@@ -83,7 +121,7 @@ function PlayersPage() {
             ))}
             {players.length === 0 && (
               <tr>
-                <td colSpan="4" className="p-8 text-center text-slate-500 italic">No hay jugadores registrados.</td>
+                <td colSpan="5" className="p-8 text-center text-slate-500 italic">No hay jugadores registrados.</td>
               </tr>
             )}
           </tbody>
