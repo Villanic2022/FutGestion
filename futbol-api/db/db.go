@@ -12,11 +12,11 @@ import (
 var DB *sql.DB
 
 func Init() {
-	host := getEnv("DB_HOST", "localhost")
-	port := getEnv("DB_PORT", "5433")
+	host := getEnv("DB_HOST", "34.70.56.158")
+	port := getEnv("DB_PORT", "5439")
 	user := getEnv("DB_USER", "postgres")
-	password := getEnv("DB_PASSWORD", "postgres")
-	dbname := getEnv("DB_NAME", "futbol")
+	password := getEnv("DB_PASSWORD", "rO4JfePgQ1r3sVDZQ9Rub1qyqtfKvYz5N9Y88MgDiwQk1DCRPXCWiORJJAPuF97g")
+	dbname := getEnv("DB_NAME", "postgres")
 
 	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
@@ -72,11 +72,22 @@ func migrate() {
 	}
 	log.Println("✅ Database migrated")
 
-	// Sincronizar secuencia del ID de players para evitar conflictos de clave primaria
-	if _, err := DB.Exec("SELECT setval('players_id_seq', COALESCE((SELECT MAX(id) FROM players), 1))"); err != nil {
-		log.Println("⚠️ Warning resetting players sequence:", err)
-	} else {
-		log.Println("✅ Secuencia players_id_seq sincronizada")
+	// Sincronizar secuencias de ID para evitar conflictos de clave primaria
+	sequences := []struct {
+		seq   string
+		table string
+	}{
+		{"players_id_seq", "players"},
+		{"player_payments_id_seq", "player_payments"},
+		{"payment_concepts_id_seq", "payment_concepts"},
+	}
+	for _, s := range sequences {
+		q := fmt.Sprintf("SELECT setval('%s', COALESCE((SELECT MAX(id) FROM %s), 1))", s.seq, s.table)
+		if _, err := DB.Exec(q); err != nil {
+			log.Printf("⚠️ Warning resetting %s: %v", s.seq, err)
+		} else {
+			log.Printf("✅ Secuencia %s sincronizada", s.seq)
+		}
 	}
 }
 
